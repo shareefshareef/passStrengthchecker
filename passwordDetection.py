@@ -37,19 +37,23 @@ class DetectPassword():
             print('NO PASSWORD DETECTED.')
         else:
             password = myatch.group()
-
+            '''new string with added asterisk'''
+            resubbed_password = re.compile(r'\w+.*').sub(f"{password[0]}{'*'*(len(password)-1)}",password)
+            
             if len(password) < 8:
-                return f'({password}) PASSWORD STATUS: WEAK - must be at least 8 characters long.'
+                if password == '12345' or password == '1234' or password == 'abcd1234' or password == 'abcd':
+                    print(f'PLEASE DO NOT USE THIS KIND OF PASSWORD')
+                return f'({resubbed_password}) PASSWORD STATUS: WEAK - must be at least 8 characters long.'
             elif not self.contains_lower(password):
-                return f'({password}) PASSWORD STATUS: MEDIUM - add lower letters.'
+                return f'({resubbed_password}) PASSWORD STATUS: MEDIUM - add lower letters.'
             elif not self.contains_upper(password):
-                return f'({password}) PASSWORD STATUS: MEDIUM - add upper letters.'
+                return f'({resubbed_password}) PASSWORD STATUS: MEDIUM - add upper letters.'
             elif not self.contains_digit(password):
-                return f'({password}) PASSWORD STATUS: MEDIUM - add at least one digit.'
+                return f'({resubbed_password}) PASSWORD STATUS: MEDIUM - add at least one digit.'
             elif not self.contains_special_characters(password):
-                return f'({password}) PASSWORD STATUS: MEDIUM - add at least one special characters.'
+                return f'({resubbed_password}) PASSWORD STATUS: MEDIUM - add at least one special characters.'
             else:
-                return f'({password}) PASSWORD STATUS: STRONG - VALID PASSWORD'
+                return f'({resubbed_password}) PASSWORD STATUS: STRONG - VALID PASSWORD'
 
     def test_password_with_dummytext(self):
         '''checks the strong_password_detection() function with dummy passwords'''
@@ -84,6 +88,7 @@ class DetectPassword():
             for pwd in v:
                 print(self.strong_password_detection(pwd))
             print()
+
 
 
 
