@@ -1,6 +1,6 @@
-import random,string,re
+import random,string,re,os
 from passwordDetection2 import DetectPassword
-from getpass import getpass,os
+from getpass import getpass
 
 class L1():
 
@@ -71,8 +71,8 @@ class L1():
         if password != re_password:
             print("password mismatch!".upper())
             while True:
-                password = getpass.getpass("enter the password: ".upper()) #input("enter the password: ".upper())
-                re_password = getpass.getpass("re-enter the password: ".upper()) #input("re-enter the password: ".upper())
+                password = getpass("enter the password: ".upper()) #input("enter the password: ".upper())
+                re_password = getpass("re-enter the password: ".upper()) #input("re-enter the password: ".upper())
 
                 if password != re_password:
                     print("password mismatch!".upper())
@@ -90,7 +90,7 @@ class L1():
                 '''
         prompt += '\n'
         print(prompt)
-        password = getpass.getpass("enter the password: ".upper())#input("enter the password: ".upper())
+        password = getpass("enter the password: ".upper())#input("enter the password: ".upper())
         return password
     
     def check_password_criteria(self,password):
@@ -126,13 +126,7 @@ class L1():
             file.write("\npassword: "+password+'\n')
             file.write("email: "+email+'\n')
         print(f"Account created with the username({username}) password({password}).")
-
-    def username_exists(self,username):
-        if username in os.listdir("Accounts"):
-            return True
-        else:
-            return False
-        
+    
     def email_exists(self,email=''):
         username_regex = r'username:\s*([a-zA-Z0-9_]+)'
         email_regex = DetectPassword().email_re
@@ -177,7 +171,7 @@ class L1():
             print("No account created.")
                   
     def Register(self):
-        print("ACCOUNT REGISTRATION".center(40, '='))
+        # print("ACCOUNT REGISTRATION".center(40, '='))
         first_name = input("enter your first_name: ".upper())
         last_name = input('enter your last_name: '.upper())
         middle_name = input("enter your middle name(optional): ".upper())
@@ -193,8 +187,9 @@ class L1():
                     break
 
 
-        password = getpass.getpass("enter your password: ".upper())  #input("Enter your password: ".upper())
-        re_password = getpass.getpass("re-enter your password: ".upper()) #input("re-enter your password: ".upper())
+        password = getpass("enter your password: ".upper())  
+        #input("Enter your password: ".upper())
+        re_password = getpass("re-enter your password: ".upper()) #input("re-enter your password: ".upper())
 
         '''this conditions check the passwords'''
         password = self.check_password_mistmatch(password,re_password)
@@ -210,25 +205,120 @@ class L1():
 
         self.proceed_to_create_account_or_not(prompt=prompt,first_name=first_name,last_name=last_name,email=email,password=password,middle_name=middle_name)
 
-        print("END OF REGISTRATION".center(40, '='))
+        # print("END OF REGISTRATION".center(40, '='))
+
+    def username_exists(self,username):
+        if username in os.listdir("Accounts"):
+            return True
+        else:
+            return False
+
+    def authenticate_user(self,username,password):
+        '''function authenticate user '''
+        password = password.strip()
+        password_regex = r'password:\s*([a-zA-Z0-9@#$.!+-_=*<>,]+)'
+        if self.username_exists(username=username+'.txt'):
+            with open(f"Accounts\{username}.txt") as file:
+                file_content = file.read()
+                password_pattern = re.compile(password_regex).search(file_content).group(1)
+                if password_pattern == password:
+                    user_status = {
+                        'username':username,
+                        'password':password,
+                        'status':True
+                    }
+                    return user_status
+                else:
+                    return False
+                
+    def re_try_password(self,username,password):
+        wpassword = password.strip()
+        prompt = 'password didnt match try again.'
+        password_regex = r'password:\s*([a-zA-Z0-9@#$.!+-_=*<>,]+)'
+        if self.username_exists(username=username+'.txt'):
+            with open(f"Accounts\{username}.txt") as file:
+                file_content = file.read()
+                password_pattern = re.compile(password_regex).search(file_content).group(1)
+                stored_password = password_pattern
+                count = 3
+                while True:
+                    print(f"chances left {count}")
+                    prompt+='\n'
+                    
+                    password = getpass("password: ".upper())
+                    if password == stored_password:
+                        print("Login successfull")
+                        return True
+                    if count == 1:
+                        resforgot = input("forgot password?:[y|n] ".upper())
+                        if resforgot.lower() == 'y':
+                            self.forgot_password()
+                            break
+                        else:
+                            print("TRY again later".upper())
+                            break                        
+                    count -= 1
+                    print(prompt)
+        else:
+            return False       
+
+                
+    def login(self):
+        username = input("username: ".upper())
+        password = getpass("password: ".upper())
+
+        result = self.authenticate_user(username=username,password=password)
+        if result:
+            print("login successfull.")
+        else:
+            print("WARNING: (password didnt match) ")
+            self.re_try_password(username=username,password=password)
+
+    def forgot_password(self):
+        username = input("enter your username: ".upper())
+        password_regex = r'password:\s*([a-zA-Z0-9@#$.!+-_=*<>,]+)'
+        if self.username_exists(username=username+'.txt'):
+            with open(f"Accounts\{username}.txt") as file:
+                file_content = file.read()
+                password_pattern = re.compile(password_regex).search(file_content).group(1)
+                print(f"your password is {password_pattern}".upper())
+        else:
+            print("No password Found.".upper())
 
 
-        
+    def delete_account(self):
+        while True:
+            asking_user = input("do you want to delete your account[y|n]: ".title())
+            if asking_user.lower() == 'y':
+                pass
+            elif asking_user.lower() == 'n':
+                print("process terminated.".title())
+            elif asking_user.lower() == 'q':
+                break
+            else:
+                print("invalid input.".upper())
+            ask_username = input('enter your username: '.title())
 
-obj = L1()
-
-
-
-obj.Register()
-
-
-
-
-
-
-
-
-
+            confirmation = input(f"confirm want to delete the {ask_username} account[y\n]: ".upper())
+            if confirmation.lower() == 'y':
+                ask_username = ask_username.strip()
+                if self.username_exists(username=ask_username+'.txt'):
+                    print("To delete your account authenticate your password.")
+                    password = input("password: ".upper())
+                    res = self.authenticate_user(username=ask_username,password=password)
+                    if res['status'] == True:
+                        os.remove(f'Accounts\{ask_username.strip()}.txt')
+                        print("Account Deleted.")
+                        break
+                else:
+                    print("unable to delete this account")
+                    break
+            elif confirmation.lower() == 'n':
+                print("process terminated.".title())
+            elif asking_user.lower() == 'q':
+                break
+            else:
+                print("process terminated.".title())
 
 
 """
