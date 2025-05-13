@@ -1,58 +1,66 @@
-# passStrengthchecker
+# 🛡️ Python Account Management System & Password Strength Checker
 
-A Python program to validate and check the strength of passwords based on specific criteria such as length, uppercase, lowercase, digits, and special characters.
+This repository contains two Python-based projects:
 
-## Features
-- **Checks if the password contains both uppercase and lowercase letters**.
-- **Checks for at least one numeric digit**.
-- **Validates the presence of special characters** like `!@#$%^&*()_+{}[]?<>.,;':=`.
-- **Determines if the password is weak, medium, or strong** based on the following criteria:
-    - **Weak**: Less than 8 characters.
-    - **Medium**: Missing at least one category (lowercase, uppercase, digit, or special character).
-    - **Strong**: Meets all the criteria (length >= 8, includes lowercase, uppercase, digits, and special characters).
+1. **Account Management System** – A command-line interface for user registration and login with email/password validation.
+2. **Password Strength Checker** – A Python class to validate password strength using specific criteria.
 
-## Requirements
-- Python 3.x
-- `unittest` module for testing (built-in with Python)
+---
 
-## Installation
-1. Clone or download this repository.
-2. Make sure you have Python 3.x installed on your machine.
-3. No additional dependencies are required.
+## 🔐 1. Account Management System
 
-## Usage
-To use the password checker, follow the steps below:
+A simple CLI-based system that allows users to **register**, **login**, and manage account details with local file-based storage.
 
-1. Import the `DetectPassword` class:
-    ```python
-    from passwordDetection import DetectPassword
-    ```
+### 🚀 Features
 
-2. Create an instance of the `DetectPassword` class and call the `strong_password_detection` method with a password:
-    ```python
-    dp = DetectPassword()
-    result = dp.strong_password_detection("YourPasswordHere")
-    print(result)
-    ```
+- Unique username generation
+- Email format validation
+- Strong password enforcement (via `DetectPassword` class)
+- Optional middle name during registration
+- Retry mechanism for login attempts
+- "Forgot Password" feature
+- Account info stored as `.txt` files in the `Accounts/` folder
 
-## Testing
+### 📁 Folder Structure
 
-To test the program, the `unittest` module is used. The `TestDetectPassword` class contains test cases for weak, medium, and strong passwords.
 
-### Running Tests
-To run the tests, use the following command:
+---
 
-```bash
-python -m unittest test_password_checker.py
+## 🔑 2. Password Strength Checker
+
+A utility to validate and rate the strength of passwords.
+
+### ✅ Criteria
+
+- **Minimum 8 characters**
+- **At least one uppercase and one lowercase letter**
+- **At least one digit**
+- **At least one special character** (`!@#$%^&*()_+{}[]?<>.,;':=`)
+
+### 🔍 Strength Levels
+
+- **Weak**: Less than 8 characters  
+- **Medium**: Missing one or more required character types  
+- **Strong**: Meets all requirements  
+
+### 🧪 Testing
+
+Includes a `unittest` test suite to validate password strength across different cases.
+
+### 📦 How to Use
+
+```python
+from passwordDetection import DetectPassword
+
 dp = DetectPassword()
 print(dp.strong_password_detection("TestPass#456"))
+# Output: (TestPass#456) PASSWORD STATUS: STRONG - VALID PASSWORD
+## 📋 Requirements
 
-(TestPass#456) PASSWORD STATUS: STRONG - VALID PASSWORD
+- Python 3.x  
+- `unittest` (built-in with Python)
 
-dp = DetectPassword()
-print(dp.strong_password_detection("abc"))
+## 📌 Notes
 
-(abc) PASSWORD STATUS: WEAK - must be at least 8 characters long.
-
-
-
+- This is a beginner-friendly project for learning file handling, validation, and OOP in Python.
+- For production use, consider securing stored passwords (e.g., hashing with `bcrypt`).
