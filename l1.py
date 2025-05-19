@@ -1,6 +1,7 @@
 import random,string,re,os
 from passwordDetection2 import DetectPassword
 from getpass import getpass
+import hashlib
 
 class L1():
 
@@ -63,6 +64,9 @@ class L1():
             f"{first[:3]}{last[:3]}{random.randint(1000,9999)}"
             ]
             return random.choice(patterns).lower()
+        
+    def hash_password(self,password):
+        return hashlib.sha256(password.encode()).hexdigest()
            
     def check_password_mistmatch(self,password,re_password):
         password = password.strip()
@@ -123,7 +127,7 @@ class L1():
         with open(filepath,'w') as file:
             file.write(heading)
             file.write("\nusername: "+username)
-            file.write("\npassword: "+password+'\n')
+            file.write("\npassword: "+self.hash_password(password)+'\n')
             file.write("email: "+email+'\n')
         print(f"Account created with the username({username}) password({password}).")
     
@@ -147,7 +151,7 @@ class L1():
                     return False
 
     def proceed_to_create_account_or_not(self,prompt,first_name,last_name,email,password,middle_name=''):
-
+        '''this ask whether to create account or not'''
         if prompt.lower() == 'y':
             if middle_name:
                 full_name = first_name + ' ' + middle_name + ' ' + last_name
@@ -215,7 +219,7 @@ class L1():
 
     def authenticate_user(self,username,password):
         '''function authenticate user '''
-        password = password.strip()
+        password = self.hash_password(password.strip())
         password_regex = r'password:\s*([a-zA-Z0-9@#$.!+-_=*<>,]+)'
         if self.username_exists(username=username+'.txt'):
             with open(f"Accounts\{username}.txt") as file:
@@ -321,6 +325,14 @@ class L1():
                 print("process terminated.".title())
 
 
+
+
+
+obj = L1()
+
+obj.Register()
+print("registration done.")
+obj.login()
 """
 create accounts folder , 
 in the folder username txt file with password 
