@@ -345,10 +345,6 @@ class L1():
 
 
 
-obj = L1()
-
-
-obj.login()
 """
 create accounts folder , 
 in the folder username txt file with password 
@@ -357,6 +353,9 @@ when loogin search the username in the accounts folder then check password from 
 add feature when register check the database if already email or username is found or not. 
 
 before that first perfect the registration forum first 
+
+better to store data on json
+
 """
 
         
