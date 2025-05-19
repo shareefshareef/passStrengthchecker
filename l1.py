@@ -279,15 +279,32 @@ class L1():
             self.re_try_password(username=username,password=password)
 
     def forgot_password(self):
-        username = input("enter your username: ".upper())
-        password_regex = r'password:\s*([a-zA-Z0-9@#$.!+-_=*<>,]+)'
-        if self.username_exists(username=username+'.txt'):
-            with open(f"Accounts\{username}.txt") as file:
-                file_content = file.read()
-                password_pattern = re.compile(password_regex).search(file_content).group(1)
-                print(f"your password is {password_pattern}".upper())
+        '''reset the password '''
+        username = input("ENTER YOUR USERNAME: ").strip()
+        filename = os.path.join("Accounts", username + '.txt')
+
+        if self.username_exists(username=username + '.txt'):
+            password = input("RESET PASSWORD: ").strip()
+            re_enter_password = input("RE-ENTER PASSWORD: ").strip()
+
+            if password == re_enter_password:
+                # Read all lines
+                with open(filename, "r") as file:
+                    file_contents = file.readlines()
+
+                # Write back, updating only the password line
+                with open(filename, 'w') as file:
+                    for line in file_contents:
+                        if line.startswith("password:"):
+                            file.write(f"password: {self.hash_password(password)}\n")
+                        else:
+                            file.write(line)
+
+                print(" PASSWORD RESET SUCCESSFULLY")
+            else:
+                print(" PASSWORDS DIDN'T MATCH.")
         else:
-            print("No password Found.".upper())
+            print(" USERNAME NOT FOUND.")
 
 
     def delete_account(self):
@@ -330,8 +347,7 @@ class L1():
 
 obj = L1()
 
-obj.Register()
-print("registration done.")
+
 obj.login()
 """
 create accounts folder , 
